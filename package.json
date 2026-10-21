@@ -1,0 +1,74 @@
+{
+  "name": "claude-account-switcher",
+  "displayName": "Claude Account Switcher",
+  "description": "Quickly swap Claude Code between saved Claude accounts.",
+  "version": "0.2.1",
+  "publisher": "tirtharay",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "main": "./src/extension.js",
+  "extensionKind": ["workspace"],
+  "activationEvents": ["onStartupFinished"],
+  "repository": {
+    "type": "git",
+    "url": "https://example.invalid/claude-account-switcher"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "claudeAccounts", "title": "Claude Accounts", "icon": "media/accounts.svg" }
+      ]
+    },
+    "views": {
+      "claudeAccounts": [
+        { "id": "claudeSwitcher.profiles", "name": "Accounts" }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "claudeSwitcher.profiles",
+        "contents": "No saved Claude accounts yet.\n[Save Current Login](command:claudeSwitcher.save)\n[Add Another Account](command:claudeSwitcher.add)"
+      }
+    ],
+    "commands": [
+      { "command": "claudeSwitcher.switch", "title": "Switch Account", "category": "Claude Accounts" },
+      { "command": "claudeSwitcher.switchTo", "title": "Switch to This Account", "category": "Claude Accounts", "icon": "$(arrow-swap)" },
+      { "command": "claudeSwitcher.save", "title": "Save Current Login as Profile", "category": "Claude Accounts", "icon": "$(save)" },
+      { "command": "claudeSwitcher.add", "title": "Add Another Account", "category": "Claude Accounts", "icon": "$(add)" },
+      { "command": "claudeSwitcher.remove", "title": "Remove Profile", "category": "Claude Accounts", "icon": "$(trash)" },
+      { "command": "claudeSwitcher.refresh", "title": "Refresh", "category": "Claude Accounts", "icon": "$(refresh)" },
+      { "command": "claudeSwitcher.openFolder", "title": "Reveal Profiles Folder", "category": "Claude Accounts" }
+    ],
+    "menus": {
+      "view/title": [
+        { "command": "claudeSwitcher.add", "when": "view == claudeSwitcher.profiles", "group": "navigation@1" },
+        { "command": "claudeSwitcher.save", "when": "view == claudeSwitcher.profiles", "group": "navigation@2" },
+        { "command": "claudeSwitcher.refresh", "when": "view == claudeSwitcher.profiles", "group": "navigation@3" }
+      ],
+      "view/item/context": [
+        { "command": "claudeSwitcher.switchTo", "when": "view == claudeSwitcher.profiles && viewItem == profile", "group": "inline@1" },
+        { "command": "claudeSwitcher.remove", "when": "view == claudeSwitcher.profiles && viewItem =~ /profile/", "group": "inline@2" }
+      ],
+      "commandPalette": [
+        { "command": "claudeSwitcher.switchTo", "when": "false" }
+      ]
+    },
+    "configuration": {
+      "title": "Claude Account Switcher",
+      "properties": {
+        "claudeSwitcher.reloadAfterSwitch": {
+          "type": "string",
+          "enum": ["ask", "always", "never"],
+          "default": "ask",
+          "description": "Reload the VS Code window after switching so running Claude Code sessions pick up the new account."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "package": "npx --yes @vscode/vsce package --allow-missing-repository"
+  }
+}
